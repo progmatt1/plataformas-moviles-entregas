@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Lista de Compras - DOM y JavaScript</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="container my-1 my-sm-2 my-md-4 my-lg-5">
+        <h1>Lista de Compras</h1>
+        <p class="lead">El objetivo es construir una lista de compras donde se puedan agregar productos.</p>
+        <h2 class="h3">Objetivos Adicionales</h2>
+        <ol>
+            <li>Agregar funcionalidad para limpiar la lista, eliminando todos los productos.</li>
+            <li>Ordenar alfabéticamente la lista de productos.</li>
+            <li>Agregar opción para eliminar cada elemento de forma individual.</li>
+        </ol>
+
+        <!-- Card de Aplicación -->
+        <div class="card">
+            <div class="card-body">
+                <h2>Listado de Productos</h2>
+                
+                <ul id="lista-productos" class="list-unstyled">
+                    <li class="d-inline">
+                        <div class="d-inline">
+                            Pan
+                        </div>
+                        <button type="button" class="btn btn-outline-danger eliminar-producto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"></path>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"></path>
+                            </svg>
+                        </button>
+                    </li>
+                </ul>
+                <button class="btn btn-danger" id="limpiar-lista">Limpiar Lista</button>
+
+                <hr class="hr">
+
+                <h2>Agregar Producto</h2>
+                <form id="form-producto">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" aria-label="Nombre del Producto">
+                        <button class="btn btn-primary" type="submit">Agregar Producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <p class="lead">Pardini Matias - 7mo 2da - TP5</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function agregarProducto(nombreProducto) {
+            const lista = document.getElementById("lista-productos");
+            const nuevoProducto = document.createElement("li");
+            nuevoProducto.textContent = nombreProducto;
+
+            // Crea el botón de eliminación
+            const botonEliminar = document.createElement("button");
+            botonEliminar.setAttribute("type", "button");
+            botonEliminar.classList.add("btn", "btn-outline-danger", "eliminar-producto");
+
+            const svg = document.createElement("svg");
+            svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            svg.setAttribute("width", "16");
+            svg.setAttribute("height", "16");
+            svg.setAttribute("fill", "currentColor");
+            svg.setAttribute("class", "bi bi-trash");
+            svg.setAttribute("viewBox", "0 0 16 16");
+
+            const path = document.createElement("path");
+            path.setAttribute("d", "M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Z");
+
+            svg.appendChild(path);
+            botonEliminar.appendChild(svg);
+
+            nuevoProducto.appendChild(botonEliminar);
+
+            lista.appendChild(nuevoProducto);
+        }
+
+        function limpiarLista() {
+            const lista = document.getElementById("lista-productos");
+            lista.innerHTML = ""; // Elimina todos los elementos de la lista
+        }
+
+        function ordenarLista() {
+            const lista = document.getElementById("lista-productos");
+            const items = Array.from(lista.children);
+            items.sort((a, b) => a.textContent.localeCompare(b.textContent)); // Ordena alfabéticamente
+            items.forEach(item => lista.appendChild(item));
+        }
+
+        function eliminarProducto(e) {
+            if (e.target.classList.contains("eliminar-producto")) {
+                const li = e.target.closest("li"); // Encuentra el elemento li padre
+                if (li) {
+                    li.remove(); // Elimina el elemento li
+                }
+            }
+        }
+
+        function handlerFormulario(e) {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const nombreProducto = input.value.trim();
+            if (nombreProducto !== "") {
+                agregarProducto(nombreProducto);
+                input.value = "";
+                ordenarLista();
+            }
+        }
+
+        document.querySelector('form').addEventListener('submit', handlerFormulario);
+
+        document.getElementById("limpiar-lista").addEventListener("click", limpiarLista);
+        document.getElementById("lista-productos").addEventListener("click", eliminarProducto);
+    </script>
+</body>
+</html>
